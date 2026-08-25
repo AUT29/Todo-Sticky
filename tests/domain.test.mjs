@@ -5,6 +5,7 @@ import {
   reorderWithinGroup,
   runRollover,
   sortedTasksForDate,
+  timelineMatchesQuery,
   visibleDateKeys
 } from "../src/domain.js";
 
@@ -127,5 +128,10 @@ assert.equal(Object.hasOwn(legacy, "pet"), false);
 assert.ok(legacy.sync.localOwnerId.startsWith("local_user_"));
 assert.ok(legacy.sync.deviceId.startsWith("device_"));
 
+
+assert.equal(timelineMatchesQuery({ title: "复盘", summary: "修好了搜索" }, "复盘"), true);
+assert.equal(timelineMatchesQuery({ title: "复盘", summary: "修好了搜索" }, "搜索"), true);
+assert.equal(timelineMatchesQuery({ title: "复盘", contentHtml: "<p>发布安装包</p>" }, "安装包"), true);
+assert.equal(timelineMatchesQuery({ title: "复盘", summary: "修好了搜索" }, "不存在"), false);
 
 console.log("domain tests passed");
