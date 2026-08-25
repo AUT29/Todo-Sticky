@@ -791,6 +791,18 @@ body.task-dragging button {
   gap: 9px;
 }
 
+.timeline-search {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.timeline-search input {
+  width: 100%;
+  height: 32px;
+}
+
 .timeline-item.panel-item {
   cursor: pointer;
 }
