@@ -1,0 +1,14 @@
+﻿node_modules/
+dist/
+src-tauri/target/
+
+.codex-dev-server*.log
+.edge-profile/
+
+*.exe
+*.msi
+*.zip
+
+.env
+.env.*
+!.env.example

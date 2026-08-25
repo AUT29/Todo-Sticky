@@ -1,0 +1,26 @@
+{
+  "name": "daibanshixiang",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A tiny Windows sticky-note todo planner.",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build-frontend.mjs",
+    "dev": "node tools/dev-server.mjs",
+    "test": "node tests/domain.test.mjs",
+    "tauri:dev": "pnpm tauri dev",
+    "tauri:build": "pnpm tauri build",
+    "build:installer": "node tools/build-installer.mjs --require-cloud",
+    "build:installer:cloud": "node tools/build-installer.mjs --require-cloud",
+    "check:release": "node tools/check-release.mjs",
+    "check:local-data": "node tools/check-local-data.mjs",
+    "check:desktop": "node tests/domain.test.mjs && node tools/check-sync-safety.mjs && node tools/check-supabase-schema.mjs && node tools/check-release.mjs && node tools/check-cloud-config.mjs && node tools/check-local-data.mjs",
+    "check:supabase-schema": "node tools/check-supabase-schema.mjs",
+    "check:cloud-config": "node tools/check-cloud-config.mjs",
+    "check:sync-safety": "node tools/check-sync-safety.mjs",
+    "build:installer:local": "node tools/build-installer.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.6.0"
+  }
+}
