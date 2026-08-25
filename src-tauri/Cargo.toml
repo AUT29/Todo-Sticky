@@ -1,6 +1,6 @@
 [package]
 name = "daibanshixiang"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tiny Windows sticky-note todo planner"
 authors = ["AgiUser"]
 edition = "2021"
