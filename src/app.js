@@ -14,6 +14,7 @@ import {
   toDateKey,
   visibleDateKeys,
   rangeForStart,
+  timelineMatchesQuery,
   weekdayLabel
 } from "./domain.js";
 import { BUILTIN_SUPABASE_ANON_KEY, BUILTIN_SUPABASE_URL } from "./cloud-config.js";
@@ -41,6 +42,7 @@ const TIMELINE_WINDOW_WIDTH = 760;
 const TIMELINE_AUTOSAVE_DELAY_MS = 1000;
 let timelineRestoreWidth = null;
 let timelineAutosaveTimer = null;
+let timelineSearch = "";
 
 startApp();
 
@@ -420,9 +422,22 @@ function renderTimelinePanel() {
 
 function renderTimelineList() {
   if (!state.timeline.length) return `<p class="empty timeline-empty">\u7ed9\u67d0\u5929\u6216\u67d0\u6bb5\u65f6\u95f4\u5199\u4e00\u6761\u603b\u7ed3\u3002</p>`;
-  return state.timeline
+  const items = state.timeline
     .slice()
     .sort((a, b) => (b.startDate || "").localeCompare(a.startDate || ""))
+    .filter((item) => timelineMatchesQuery(item, timelineSearch));
+  return `<label class="timeline-search">
+      <span>\u641c\u7d22</span>
+      <input data-timeline-search value="${escapeHtml(timelineSearch)}" placeholder="\u641c\u6807\u9898\u6216\u5185\u5bb9" />
+    </label>
+    <div data-timeline-list>
+      ${renderTimelineItems(items)}
+    </div>`;
+}
+
+function renderTimelineItems(items) {
+  if (!items.length) return `<p class="empty timeline-empty">\u6ca1\u6709\u5339\u914d\u7684\u65f6\u95f4\u8f74\u3002</p>`;
+  return items
     .map((item) => `<article class="timeline-item panel-item" data-action="edit-timeline" data-id="${item.id}">
       <div class="timeline-item-head">
         <strong>${escapeHtml(item.title || "\u672a\u547d\u540d\u65f6\u95f4\u8f74")}</strong>
@@ -500,6 +515,7 @@ function bindEvents() {
   });
   app.querySelectorAll("[data-detail-id]").forEach((node) => node.addEventListener("blur", () => saveDetail(node.dataset.detailId, { render: false })));
   app.querySelector("[data-history-month]")?.addEventListener("change", (event) => setHistoryMonth(event.currentTarget.value));
+  app.querySelector("[data-timeline-search]")?.addEventListener("input", filterTimelineList);
   app.querySelectorAll(".rich-editor").forEach(bindRichEditor);
   bindTimelineAutosave();
   hydrateRichImages();
@@ -512,6 +528,19 @@ function bindEvents() {
   bindDragEvents();
 }
 
+
+function filterTimelineList(event) {
+  timelineSearch = event.currentTarget.value;
+  const list = app.querySelector("[data-timeline-list]");
+  if (!list) return;
+  const items = state.timeline
+    .slice()
+    .sort((a, b) => (b.startDate || "").localeCompare(a.startDate || ""))
+    .filter((item) => timelineMatchesQuery(item, timelineSearch));
+  list.innerHTML = renderTimelineItems(items);
+  list.querySelectorAll("[data-action]").forEach((node) => node.addEventListener("click", handleAction));
+  hydrateRichImages();
+}
 
 function bindDragEvents() {
   app.querySelectorAll("[data-drag-handle]").forEach((handle) => {
