@@ -32,6 +32,20 @@ export function displayDate(key) {
   return `${date.getMonth() + 1}月${date.getDate()}日 ${weekdayLabel(key)}`;
 }
 
+export function timelineMatchesQuery(item, query) {
+  const needle = normalizeSearchText(query);
+  if (!needle) return true;
+  return normalizeSearchText([item?.title, item?.summary, htmlText(item?.contentHtml)].join(" ")).includes(needle);
+}
+
+function normalizeSearchText(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function htmlText(value) {
+  return String(value || "").replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]*>/g, " ");
+}
+
 export function makeId(prefix) {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 }
